@@ -462,6 +462,11 @@ cdf_count_chain(const cdf_sat_t *sat, cdf_secid_t sid, size_t size)
 	cdf_secid_t maxsector = (cdf_secid_t)((sat->sat_len * size)
 	    / sizeof(maxsector));
 
+	if (sid == CDF_SECID_END_OF_CHAIN) {
+		/* 0-length chain. */
+		return (size_t)0;
+	}
+
 	DPRINTF(("Chain:"));
 	for (j = i = 0; sid >= 0; i++, j++) {
 		DPRINTF((" %d", sid));
