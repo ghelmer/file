@@ -27,7 +27,7 @@
  */
 /*
  * file.h - definitions for file(1) program
- * @(#)$File: file.h,v 1.151 2014/05/14 23:15:42 christos Exp $
+ * @(#)$File: file.h,v 1.155 2014/10/11 15:03:16 christos Exp $
  */
 
 #ifndef __file_h__
@@ -481,6 +481,14 @@ protected int file_regexec(file_regex_t *, const char *, size_t, regmatch_t *,
     int);
 protected void file_regfree(file_regex_t *);
 protected void file_regerror(file_regex_t *, int, struct magic_set *);
+
+typedef struct {
+	char *buf;
+	uint32_t offset;
+} file_pushbuf_t;
+
+protected file_pushbuf_t *file_push_buffer(struct magic_set *);
+protected char  *file_pop_buffer(struct magic_set *, file_pushbuf_t *);
 
 #ifndef COMPILE_ONLY
 extern const char *file_names[];
