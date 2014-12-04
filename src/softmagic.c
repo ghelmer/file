@@ -32,7 +32,7 @@
 #include "file.h"
 
 #ifndef	lint
-FILE_RCSID("@(#)$File: softmagic.c,v 1.198 2014/11/23 13:54:27 christos Exp $")
+FILE_RCSID("@(#)$File: softmagic.c,v 1.202 2014/11/28 02:46:39 christos Exp $")
 #endif	/* lint */
 
 #include "magic.h"
@@ -1661,7 +1661,7 @@ mget(struct magic_set *ms, const unsigned char *s, struct magic *m,
 			fprintf(stderr, "indirect @offs=%u[%d]\n", offset, rv);
 
 		rbuf = file_pop_buffer(ms, pb);
-		if (rbuf == NULL)
+		if (rbuf == NULL && ms->event_flags & EVENT_HAD_ERR)
 			return -1;
 
 		if (rv == 1) {
