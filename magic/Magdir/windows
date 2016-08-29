@@ -575,3 +575,8 @@
 #>>>>>>93	ubyte		x		\b, MFT version %x
 #
 
+# Microsoft Rights Management Services (RMS) PFILE
+# wrapper around encrypted file contents.
+0	string			.pfile
+>6	leshort			0x0002	Microsoft RMS Protected File
+!:mime	application/vnd.ms-rms-pfile
