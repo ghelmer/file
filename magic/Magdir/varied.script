@@ -49,3 +49,14 @@
 0	string 		XPCOM\nTypeLib\r\n\032		XPConnect Typelib
 >0x10  byte        x       version %d
 >>0x11 byte        x      \b.%d
+
+# Simple checks for Javascript Object Notation (JSON)
+## Odd: file compiler was unable to handle the full regex on one line.
+##>&0	regex	[[:space:]]*"[[:alpha:]][[:alnum:]]*"[[:space:]]*:[[:space:]]*["\\[]	JSONregex
+#0	string/t	{
+#>&0	regex	[[:space:]]*"[[:alnum:]]*"
+#>>&0	regex	[[:space:]]*:[[:space:]]*["\\[]	JSON
+
+0	regex	\\^\\{[[:space:][{]*"[[:alnum:]]*"
+>&0	regex	[[:space:]]*:[[:space:]]*["\\[]	JSON
+!:mime	application/json
