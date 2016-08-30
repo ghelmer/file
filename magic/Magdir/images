@@ -1120,3 +1120,15 @@
 #
 0	string	\x42\x50\x47\xFB	BPG (Better Portable Graphics)
 !:mime  image/bpg
+
+# OBJ 3D Object Format - a very simple text file format
+# Most OBJ files begin with a '#', but not all.
+0	byte		0x23
+>1	search/256	\x0amtllib\ 
+>>&0	regex/80	[A-Za-z0-9_-]+\\.mtl	OBJ 3D Object (mtllib)
+!:mime	application/x-wavefront-obj
+
+0	byte		0x23
+>1	search/256	\x0av\ 
+>>&1	regex/80	-?[0-9.]+\ -?[0-9.]+\ -?[0-9.]+[[:space:]]	OBJ 3D Object (v n n n)
+!:mime	application/x-wavefront-obj
