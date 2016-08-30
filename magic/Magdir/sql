@@ -55,6 +55,14 @@
 # associated application.
 #
 0   string  SQLite\ format\ 3
+>0x840 search/128 CREATE\ TABLE\ CAP_FEATURES_INFO\ 	HP VDF file
+!:mime	application/x-hp-vdf
+>0x840 search/4096 4115PrintQuality    HP VDF file
+!:mime	application/x-hp-vdf
+>0x840 search/128 6066ResolutionPopUp  HP VDF file
+!:mime	application/x-hp-vdf
+>0x840 search/2048 PAPERSIZE_INTENT    HP VDF file
+!:mime	application/x-hp-vdf
 >60 belong  =0x5f4d544e  Monotone source repository - SQLite3 database
 >68 belong  =0x0f055112  Fossil checkout - SQLite3 database
 >68 belong  =0x0f055113  Fossil global configuration - SQLite3 database
@@ -63,6 +71,7 @@
 >68 belong  =0x42654c6e  Bentley Systems Localization File - SQLite3 database
 >68 belong  =0x47504b47  OGC GeoPackage file - SQLite3 database
 >68 default x            SQLite 3.x database
+!:mime	application/x-sqlite3
 >>68 belong  !0          \b, application id %u
 >>60 belong  !0          \b, user version %d
 
