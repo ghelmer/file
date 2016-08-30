@@ -723,6 +723,13 @@
 >(26.s+30)	leshort	0xcafe		Java archive data (JAR)
 !:mime	application/java-archive
 
+# iOS App
+>(26.s+30)	leshort	!0xcafe
+>>26	string	!\x8\0\0\0mimetype
+>>>30	string	Payload/
+>>>>38	search/64	.app/	iOS App
+!:mime	application/x-ios-app
+
 # Generic zip archives (Greg Roelofs, c/o zip-bugs@wkuvx1.wku.edu)
 #   Next line excludes specialized formats:
 >(26.s+30)	leshort	!0xcafe
@@ -891,8 +898,8 @@
 
 # From: Dirk Jagdmann <doj@cubic.org>
 # xar archive format: http://code.google.com/p/xar/
-0	string	xar!		xar archive
->6	beshort	x		- version %d
+#0	string	xar!		xar archive
+#>6	beshort	x		- version %d
 
 # From: "Nelson A. de Oliveira" <naoliv@gmail.com>
 # .kgb
@@ -902,6 +909,7 @@
 # xar (eXtensible ARchiver) archive
 # From: "David Remahl" <dremahl@apple.com>
 0	string	xar!		xar archive
+!:mime application/x-xar
 #>4	beshort	x		header size %d
 >6	beshort	x		version %d,
 #>8	quad	x		compressed TOC: %d,
