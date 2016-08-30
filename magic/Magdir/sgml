@@ -8,6 +8,24 @@
 >>19	search/4096	\<gnc-v2		GnuCash file
 !:mime	application/x-gnucash
 
+# Type:	Collada 3D Resources file (.dae) -- registered MIME type
+0	string		\<?xml\ version="
+>15	string		>\0
+>>19	search/4096	\<COLLADA		COLLADA 3D Digital Asset
+!:mime	model/vnd.collada+xml
+
+# Type:	Collada 3D Resources file (.dae) -- UTF-8 BOM
+0	string		\xef\xbb\xbf\<?xml\ version="
+>18	string		>\0
+>>22	search/4096	\<COLLADA		COLLADA 3D Digital Asset (UTF-8 BOM)
+!:mime	model/vnd.collada+xml
+
+# Type:	Collada 3D Resources file (.dae) -- UTF-16 LE
+2	lestring16		\<?xml\ version="
+>42	string		>\0
+>>48	search/4096	\<\0C\0O\0L\0L\0A\0D\0A\0	COLLADA 3D Digital Asset (UTF-16 LE)
+!:mime	model/vnd.collada+xml
+
 # Sitemap file
 0	string/t		\<?xml\ version="
 >15	string		>\0
