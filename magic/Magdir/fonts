@@ -93,6 +93,7 @@
 # TrueType/OpenType font collections (.ttc)
 # http://www.microsoft.com/typography/otspec/otff.htm
 0	string		ttcf		TrueType font collection data
+!:mime	application/vnd.ms-ttfc
 >4	belong		0x00010000	\b, 1.0
 >>8	belong		>0		\b, %d fonts
 >4	belong		0x00020000	\b, 2.0
