@@ -512,6 +512,20 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 #endif
 
 	if ((i = cdf_read_user_stream(&info, &h, &sat, &ssat, &sst, &dir,
+	    "DRMEncryptedDataSpace", &scn)) != -1) {
+		if (NOTMIME(ms)) {
+		  if (file_printf(ms,
+				  "MS RMS Encrypted") == -1)
+		    return -1;
+		} else {
+		  if (file_printf(ms, "application/vnd.ms-rms-encrypted") == -1)
+		    return -1;
+		}
+		i = 1;
+		goto out5;
+	}
+
+	if ((i = cdf_read_user_stream(&info, &h, &sat, &ssat, &sst, &dir,
 	    "FileHeader", &scn)) != -1) {
 #define HWP5_SIGNATURE "HWP Document File"
 		if (scn.sst_dirlen >= sizeof(HWP5_SIGNATURE) - 1
