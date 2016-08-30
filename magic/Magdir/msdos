@@ -41,6 +41,16 @@
 0	leshort		0x290	MS Windows COFF PA-RISC object file
 #>4	ledate		x	stamp %s
 
+# Absolute DLP Bug 5897:
+# Test for Microsoft Anti-Malware VDM files -- appear to be exes that have a 12-byte header.
+0	lelong		0xc0c0c0c0
+>0x0c	string/b	MZ
+# If the relocation table is 0x40 or more bytes into the file, it's definitely
+# not a DOS EXE.
+>>0x24  leshort >0x3f
+>>>(0x48.l+0x0c) string PE\0\0 PE (Microsoft VDM)
+!:mime	application/x-dosexec
+
 # Tests for various EXE types.
 #
 # Many of the compressed formats were extraced from IDARC 1.23 source code.
@@ -978,6 +988,7 @@
 # DOS EPS Binary File Header
 # From: Ed Sznyter <ews@Black.Market.NET>
 0	belong		0xC5D0D3C6	DOS EPS Binary File
+!:mime	application/postscript
 >4	long		>0		Postscript starts at byte %d
 >>8	long		>0		length %d
 >>>12	long		>0		Metafile starts at byte %d
@@ -1014,6 +1025,7 @@
 
 # HtmlHelp files (.chm)
 0	string/b	ITSF\003\000\000\000\x60\000\000\000	MS Windows HtmlHelp Data
+!:mime	application/vnd.ms-help
 
 # GFA-BASIC (Wolfram Kleff)
 2	string/b	GFA-BASIC3	GFA-BASIC 3 data
@@ -1071,8 +1083,9 @@
 0	string/b	\224\246\056		Microsoft Word Document
 !:mime	application/msword
 
-512	string	R\0o\0o\0t\0\ \0E\0n\0t\0r\0y	Microsoft Word Document
-!:mime	application/msword
+# 2013-10-24 GGH False positive on MSI, MSP files
+#512	string	R\0o\0o\0t\0\ \0E\0n\0t\0r\0y	Microsoft Word Document
+#!:mime	application/msword
 
 # From: "Nelson A. de Oliveira" <naoliv@gmail.com>
 # Magic type for Dell's BIOS .hdr files

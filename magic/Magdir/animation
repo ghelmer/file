@@ -453,6 +453,59 @@
 #>3     byte&0x03       1              \b, NR: 50/15 ms
 #>3     byte&0x03       3              \b, NR: CCIT J.17
 
+# Bug 5897: MP3 with 1044-byte 0x00 frame at beginning
+# MP3, M1A
+# modified by Joerg Jenderek
+# GRR the original test are too common for many DOS files
+# so don't accept as MP3 until we've tested the rate
+0       belong          0x0000
+>1044   beshort&0xFFFE  0xFFFA
+# rates
+>>1046  byte&0xF0       0x10           MPEG ADTS, layer III, v1,  32 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0x20           MPEG ADTS, layer III, v1,  40 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0x30           MPEG ADTS, layer III, v1,  48 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0x40           MPEG ADTS, layer III, v1,  56 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0x50           MPEG ADTS, layer III, v1,  64 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0x60           MPEG ADTS, layer III, v1,  80 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0x70           MPEG ADTS, layer III, v1,  96 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0x80           MPEG ADTS, layer III, v1, 112 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0x90           MPEG ADTS, layer III, v1, 128 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0xA0           MPEG ADTS, layer III, v1, 160 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0xB0           MPEG ADTS, layer III, v1, 192 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0xC0           MPEG ADTS, layer III, v1, 224 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0xD0           MPEG ADTS, layer III, v1, 256 kbps
+!:mime	audio/mpeg
+>>1046  byte&0xF0       0xE0           MPEG ADTS, layer III, v1, 320 kbps
+!:mime	audio/mpeg
+# timing
+>>1046  byte&0x0C       0x00           \b, 44.1 kHz
+>>1046  byte&0x0C       0x04           \b, 48 kHz
+>>1046  byte&0x0C       0x08           \b, 32 kHz
+# channels/options
+>>1047  byte&0xC0       0x00           \b, Stereo
+>>1047  byte&0xC0       0x40           \b, JntStereo
+>>1047  byte&0xC0       0x80           \b, 2x Monaural
+>>1047  byte&0xC0       0xC0           \b, Monaural
+#>1     byte            ^0x01          \b, Data Verify
+#>2     byte            &0x02          \b, Packet Pad
+#>2     byte            &0x01          \b, Custom Flag
+#>3     byte            &0x08          \b, Copyrighted
+#>3     byte            &0x04          \b, Original Source
+#>3     byte&0x03       1              \b, NR: 50/15 ms
+#>3     byte&0x03       3              \b, NR: CCIT J.17
+
 # MP2, M1A
 0       beshort&0xFFFE  0xFFFC         MPEG ADTS, layer II, v1
 !:mime	audio/mpeg

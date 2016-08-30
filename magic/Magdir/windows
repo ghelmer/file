@@ -220,6 +220,7 @@
 # Created by: unknown
 # 'L' + GUUID
 0	string		\114\0\0\0\001\024\002\0\0\0\0\0\300\0\0\0\0\0\0\106	MS Windows shortcut
+!:mime	application/vnd.ms-shortcut
 >20	lelong&1	1	\b, Item id list present
 >20	lelong&2	2	\b, Points to a file or directory
 >20	lelong&4	4	\b, Has Description string
@@ -266,6 +267,7 @@
 # Summary: Outlook Personal Folders
 # Created by: unknown
 0	lelong		0x4E444221	Microsoft Outlook email folder
+!:mime	application/vnd.ms-outlook-pst
 >10	leshort		0x0e		(<=2002)
 >10	leshort		0x17		(>=2003)
 

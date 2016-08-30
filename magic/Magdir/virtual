@@ -20,6 +20,7 @@
 0	string	LibvirtQemudPart	Libvirt QEMU partial Suspend Image
 # From: Alex Beregszaszi <alex@fsn.hu>
 0	string/b	COWD		VMWare3
+!:mime	application/vnd.vmware-img
 >4	byte	3		disk image
 >>32	lelong	x		(%d/
 >>36	lelong	x		\b%d/
@@ -28,7 +29,13 @@
 >>32	string	>\0		(%s)
 
 0	string/b	VMDK		 VMware4 disk image
+!:mime	application/vnd.vmware-img
 0	string/b	KDMV		 VMware4 disk image
+!:mime	application/vnd.vmware-img
+
+# VMWare snapshot
+0	string	\123\377\000\360\123\377\000\360	VMware snapshot
+!:mime	application/vnd.vmware-snapshot
 
 #--------------------------------------------------------------------
 # Qemu Emulator Images
@@ -37,6 +44,7 @@
 # Made by reading sources, reading documentation, and doing trial and error
 # on existing QCOW files
 0	string/b	QFI\xFB	QEMU QCOW Image
+!:mime	application/vnd.qemu-img
 
 # Uncomment the following line to display Magic (only used for debugging
 # this magic number)
@@ -100,16 +108,19 @@
 >4	default x	(unknown version)
 
 0	string/b	QEVM		QEMU suspend to disk image
+!:mime	application/vnd.qemu-snapshot
 
 # QEMU QED Image
 # http://wiki.qemu.org/Features/QED/Specification
 0	string/b	QED\0		QEMU QED Image
+!:mime	application/vnd.qemu-qed-img
 
 # VDI Image
 # Sun xVM VirtualBox Disk Image
 # From: Richard W.M. Jones <rich@annexia.org>
 # VirtualBox Disk Image
 0x40	ulelong		0xbeda107f	VirtualBox Disk Image
+!:mime	application/vnd.virtualbox-img
 >0x44	uleshort	>0		\b, major %u
 >0x46	uleshort	>0		\b, minor %u
 >0	string		>\0		(%s)

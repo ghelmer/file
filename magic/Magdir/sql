@@ -98,6 +98,14 @@
 #
 0   string  SQLite\ format\ 3	SQLite 3.x database
 !:mime	application/x-sqlite3
+>0x840 search/128 CREATE\ TABLE\ CAP_FEATURES_INFO\ 	(HP VDF file)
+!:mime	application/x-hp-vdf
+>0x840 search/4096 4115PrintQuality    (HP VDF file)
+!:mime	application/x-hp-vdf
+>0x840 search/128 6066ResolutionPopUp  (HP VDF file)
+!:mime	application/x-hp-vdf
+>0x840 search/2048 PAPERSIZE_INTENT    (HP VDF file)
+!:mime	application/x-hp-vdf
 # seldom found extension sqlite3 like in SyncData.sqlite3
 # db
 # Avira Antivir use extension "dbe" like in avevtdb.dbe, avguard_tchk.dbe

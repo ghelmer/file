@@ -31,12 +31,19 @@
 # DOS EPS Binary File Header
 # From: Ed Sznyter <ews@Black.Market.NET>
 0       belong          0xC5D0D3C6      DOS EPS Binary File
+!:mime	application/postscript
 >4      long            >0              Postscript starts at byte %d
+!:mime	application/postscript
 >>8     long            >0              length %d
+!:mime	application/postscript
 >>>12   long            >0              Metafile starts at byte %d
+!:mime	application/postscript
 >>>>16  long            >0              length %d
+!:mime	application/postscript
 >>>20   long            >0              TIFF starts at byte %d
+!:mime	application/postscript
 >>>>24  long            >0              length %d
+!:mime	application/postscript
 
 # Summary: Adobe's PostScript Printer Description File
 # Extension: .ppd
@@ -45,6 +52,7 @@
 #
 0	string		*PPD-Adobe:\x20	PPD file
 >&0	string		x		\b, version %s
+!:mime	application/vnd.cups-ppd
 
 # HP Printer Job Language
 0	string		\033%-12345X@PJL	HP Printer Job Language data
