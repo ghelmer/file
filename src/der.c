@@ -35,7 +35,7 @@
 #include "file.h"
 
 #ifndef lint
-FILE_RCSID("@(#)$File: der.c,v 1.3 2016/03/21 17:41:14 christos Exp $")
+FILE_RCSID("@(#)$File: der.c,v 1.5 2016/04/17 19:44:45 christos Exp $")
 #endif
 #endif
 
@@ -44,7 +44,6 @@ FILE_RCSID("@(#)$File: der.c,v 1.3 2016/03/21 17:41:14 christos Exp $")
 #include <sys/mman.h>
 
 #include <stdio.h>
-#include <err.h>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,6 +52,8 @@ FILE_RCSID("@(#)$File: der.c,v 1.3 2016/03/21 17:41:14 christos Exp $")
 #ifndef TEST_DER
 #include "magic.h"
 #include "der.h"
+#else
+#include <err.h>
 #endif
 
 #define DER_BAD	((uint32_t)-1)
@@ -61,11 +62,15 @@ FILE_RCSID("@(#)$File: der.c,v 1.3 2016/03/21 17:41:14 christos Exp $")
 #define	DER_CLASS_APPLICATION	1
 #define	DER_CLASS_CONTEXT	2
 #define	DER_CLASS_PRIVATE	3
+#ifdef DEBUG_DER
 static const char der_class[] = "UACP";
+#endif
 
 #define DER_TYPE_PRIMITIVE	0
 #define DER_TYPE_CONSTRUCTED	1
+#ifdef DEBUG_DER
 static const char der_type[] = "PC";
+#endif
 
 #define	DER_TAG_EOC			0x00
 #define	DER_TAG_BOOLEAN			0x01
