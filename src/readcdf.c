@@ -567,16 +567,18 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
             &scn)) == -1) {
                 if (errno != ESRCH) {
                         expn = "Cannot read summary info";
-			goto out4;
+			goto try_doc_sum_info;
 		}
 		i = cdf_file_catalog_info(ms, &info, &h, &sat, &ssat, &sst,
 		    &dir, &scn);
 		if (i > 0)
 			goto out4;
 		i = cdf_file_dir_info(ms, &dir);
+		if (i > 0)
+			goto out4;
 		if (i < 0)
                         expn = "Cannot read section info";
-		goto out4;
+		goto try_doc_sum_info;
 	}
 
 
@@ -585,6 +587,71 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 #endif
         if ((i = cdf_file_summary_info(ms, &h, &scn, root_storage)) < 0)
             expn = "Can't expand summary_info";
+
+	if (i == 0) {
+		const char *str = NULL;
+		cdf_directory_t *d;
+		char name[__arraycount(d->d_name)];
+		size_t j, k;
+
+		for (j = 0; str == NULL && j < dir.dir_len; j++) {
+			d = &dir.dir_tab[j];
+			for (k = 0; k < sizeof(name); k++)
+				name[k] = (char)cdf_tole2(d->d_name[k]);
+			str = cdf_app_to_mime(name,
+			    NOTMIME(ms) ? name2desc : name2mime);
+		}
+		if (NOTMIME(ms)) {
+			if (str != NULL) {
+				if (file_printf(ms, "%s", str) == -1)
+					return -1;
+				i = 1;
+			}
+		} else {
+			if (str == NULL)
+				str = "vnd.ms-office";
+			if (file_printf(ms, "application/%s", str) == -1)
+				return -1;
+			i = 1;
+		}
+	}
+
+	if (i > 0) {
+		goto out4;
+	}
+
+try_doc_sum_info:
+	/* Failed to read, process, or match SummaryInformation. Try DocumentSummaryInformation. */
+	if (scn.sst_tab != NULL) {
+		free(scn.sst_tab);
+		scn.sst_tab = NULL;
+		scn.sst_len = 0;
+		scn.sst_dirlen = 0;
+	}
+	if ((i = cdf_read_doc_summary_info(&info, &h, &sat, &ssat, &sst, &dir,
+					   &scn)) == -1) {
+		if (errno != ESRCH) {
+			expn = "Cannot read doc summary info";
+			goto out4;
+		} else {
+			expn = "";
+		}
+		i = cdf_file_catalog_info(ms, &info, &h, &sat, &ssat, &sst,
+					  &dir, &scn);
+		if (i > 0)
+			goto out4;
+		i = cdf_file_dir_info(ms, &dir);
+		if (i < 0)
+			expn = "Cannot read doc summary section info";
+		goto out4;
+	}
+
+
+#ifdef CDF_DEBUG
+	cdf_dump_summary_info(&h, &scn);
+#endif
+	if ((i = cdf_file_summary_info(ms, &h, &scn, root_storage)) < 0)
+	    expn = "Can't expand doc_summary_info";
 
 	if (i == 0) {
 		const char *str = NULL;
