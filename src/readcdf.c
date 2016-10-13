@@ -559,8 +559,7 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 	}
 #endif
 
-	if ((i = cdf_read_user_stream(&info, &h, &sat, &ssat, &sst, &dir,
-	    "DRMEncryptedDataSpace", &scn)) != -1) {
+	if ((i = cdf_find_stream(&dir, "DRMEncryptedDataSpace", CDF_DIR_TYPE_USER_STREAM)) != 0) {
 		if (NOTMIME(ms)) {
 		  if (file_printf(ms,
 				  "MS RMS Encrypted") == -1)
@@ -573,14 +572,61 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 		goto out5;
 	}
 
-	if ((i = cdf_read_user_stream(&info, &h, &sat, &ssat, &sst, &dir,
-	    "EncryptedSummary", &scn)) != -1) {
+	if ((i = cdf_find_stream(&dir, "EncryptedSummary", CDF_DIR_TYPE_USER_STREAM)) != 0) {
 		if (NOTMIME(ms)) {
 		  if (file_printf(ms,
 				  "Encrypted") == -1)
 		    return -1;
 		} else {
 		  if (file_printf(ms, "application/CDFV2-encrypted") == -1)
+		    return -1;
+		}
+		i = 1;
+		goto out5;
+	}
+
+	if ((i = cdf_find_stream(&dir, "Book", CDF_DIR_TYPE_USER_STREAM)) != 0) {
+		if (NOTMIME(ms)) {
+		  if (file_printf(ms, "Microsoft Excel") == -1)
+		    return -1;
+		} else {
+		  if (file_printf(ms, "application/vnd.ms-excel") == -1)
+		    return -1;
+		}
+		i = 1;
+		goto out5;
+	}
+
+	if ((i = cdf_find_stream(&dir, "Workbook", CDF_DIR_TYPE_USER_STREAM)) != 0) {
+		if (NOTMIME(ms)) {
+		  if (file_printf(ms, "Microsoft Excel") == -1)
+		    return -1;
+		} else {
+		  if (file_printf(ms, "application/vnd.ms-excel") == -1)
+		    return -1;
+		}
+		i = 1;
+		goto out5;
+	}
+
+	if ((i = cdf_find_stream(&dir, "WordDocument", CDF_DIR_TYPE_USER_STREAM)) != 0) {
+		if (NOTMIME(ms)) {
+		  if (file_printf(ms, "Microsoft Word") == -1)
+		    return -1;
+		} else {
+		  if (file_printf(ms, "application/msword") == -1)
+		    return -1;
+		}
+		i = 1;
+		goto out5;
+	}
+
+	if ((i = cdf_find_stream(&dir, "PowerPoint", CDF_DIR_TYPE_USER_STREAM)) != 0) {
+		if (NOTMIME(ms)) {
+		  if (file_printf(ms, "Microsoft PowerPoint") == -1)
+		    return -1;
+		} else {
+		  if (file_printf(ms, "application/vnd.ms-powerpoint") == -1)
 		    return -1;
 		}
 		i = 1;
