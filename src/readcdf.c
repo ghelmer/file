@@ -348,49 +348,6 @@ cdf_file_summary_info(struct magic_set *ms, const cdf_header_t *h,
         return m == -1 ? -2 : m;
 }
 
-private int
-cdf_check_summary_info(struct magic_set *ms, const cdf_header_t *h,
-    const cdf_dir_t *dir, const cdf_stream_t *scn,
-			const cdf_directory_t *root_storage, const char **expn)
-{
-	int i;
-	const char *str = NULL;
-	cdf_directory_t *d;
-	char name[__arraycount(d->d_name)];
-	size_t j, k;
-
-#ifdef CDF_DEBUG
-        cdf_dump_summary_info(&h, &scn);
-#endif
-        if ((i = cdf_file_summary_info(ms, h, scn, root_storage)) < 0) {
-            *expn = "Can't expand summary_info";
-	    return i;
-	}
-	if (i == 1)
-		return i;
-	for (j = 0; str == NULL && j < dir->dir_len; j++) {
-		d = &dir->dir_tab[j];
-		for (k = 0; k < sizeof(name); k++)
-			name[k] = (char)cdf_tole2(d->d_name[k]);
-		str = cdf_app_to_mime(name,
-				      NOTMIME(ms) ? name2desc : name2mime);
-	}
-	if (NOTMIME(ms)) {
-		if (str != NULL) {
-			if (file_printf(ms, "%s", str) == -1)
-				return -1;
-			i = 1;
-		}
-	} else {
-		if (str == NULL)
-			str = "vnd.ms-office";
-		if (file_printf(ms, "application/%s", str) == -1)
-			return -1;
-		i = 1;
-	}
-	return i;
-}
-
 #ifdef notdef
 private char *
 format_clsid(char *buf, size_t len, const uint64_t uuid[2]) {
@@ -420,6 +377,54 @@ cdf_file_catalog_info(struct magic_set *ms, const cdf_info_t *info,
 #endif
 	if ((i = cdf_file_catalog(ms, h, scn)) == -1)
 		return -1;
+	return i;
+}
+
+private int
+cdf_check_summary_info(struct magic_set *ms, const cdf_info_t *info,
+    const cdf_header_t *h, const cdf_sat_t *sat, const cdf_sat_t *ssat,
+    const cdf_stream_t *sst, const cdf_dir_t *dir, cdf_stream_t *scn,
+    const cdf_directory_t *root_storage, const char **expn)
+{
+	int i;
+	const char *str = NULL;
+	cdf_directory_t *d;
+	char name[__arraycount(d->d_name)];
+	size_t j, k;
+
+#ifdef CDF_DEBUG
+        cdf_dump_summary_info(h, scn);
+#endif
+        if ((i = cdf_file_summary_info(ms, h, scn, root_storage)) < 0) {
+            *expn = "Can't expand summary_info";
+	    return i;
+	}
+	if (i == 1)
+		return i;
+	for (j = 0; str == NULL && j < dir->dir_len; j++) {
+		d = &dir->dir_tab[j];
+		for (k = 0; k < sizeof(name); k++)
+			name[k] = (char)cdf_tole2(d->d_name[k]);
+		str = cdf_app_to_mime(name,
+				      NOTMIME(ms) ? name2desc : name2mime);
+	}
+	if (NOTMIME(ms)) {
+		if (str != NULL) {
+			if (file_printf(ms, "%s", str) == -1)
+				return -1;
+			i = 1;
+		}
+	} else {
+		if (str == NULL)
+			str = "vnd.ms-office";
+		if (file_printf(ms, "application/%s", str) == -1)
+			return -1;
+		i = 1;
+	}
+	if (i <= 0) {
+		i = cdf_file_catalog_info(ms, info, h, sat, ssat, sst,
+					  dir, scn);
+	}
 	return i;
 }
 
@@ -612,7 +617,8 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
                         expn = "Cannot read summary info";
 		}
 	} else {
-		i = cdf_check_summary_info(ms, &h, &dir, &scn, root_storage, &expn);
+		i = cdf_check_summary_info(ms, &info, &h,
+		    &sat, &ssat, &sst, &dir, &scn, root_storage, &expn);
 		if (scn.sst_tab != NULL) {
 			free(scn.sst_tab);
 			scn.sst_tab = NULL;
@@ -627,22 +633,18 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 				expn = "Cannot read summary info";
 			}
 		} else {
-			i = cdf_check_summary_info(ms, &h, &dir, &scn, root_storage, &expn);
+			i = cdf_check_summary_info(ms, &info, &h, &sat, &ssat,
+			    &sst, &dir, &scn, root_storage, &expn);
 		}
 	}
-	if (i <= 0) {
-		i = cdf_file_catalog_info(ms, &info, &h, &sat, &ssat, &sst,
-		    &dir, &scn);
-		if (i > 0)
-			goto out4;
+	if (i == 0) {
 		i = cdf_file_dir_info(ms, &dir);
 		if (i < 0)
-                        expn = "Cannot read section info";
-		goto out4;
+			expn = "Cannot read section info";
 	}
 out5:
         free(scn.sst_tab);
-out4:
+/* unused: out4: */
         free(sst.sst_tab);
 out3:
         free(dir.dir_tab);
