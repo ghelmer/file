@@ -637,7 +637,7 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 			    &sst, &dir, &scn, root_storage, &expn);
 		}
 	}
-	if (i == 0) {
+	if (i <= 0) {
 		i = cdf_file_dir_info(ms, &dir);
 		if (i < 0)
 			expn = "Cannot read section info";
