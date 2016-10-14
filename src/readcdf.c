@@ -633,6 +633,19 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 		goto out5;
 	}
 
+	if ((i = cdf_find_stream(&dir, "__properties_version1.0", CDF_DIR_TYPE_USER_STREAM)) != 0 &&
+	    (i = cdf_find_stream(&dir, "__recip_version1.0_#00000000", CDF_DIR_TYPE_USER_STORAGE)) != 0) {
+		if (NOTMIME(ms)) {
+		  if (file_printf(ms, "Microsoft Outlook MSG") == -1)
+		    return -1;
+		} else {
+		  if (file_printf(ms, "application/vnd.ms-outlook") == -1)
+		    return -1;
+		}
+		i = 1;
+		goto out5;
+	}
+
 	if ((i = cdf_read_user_stream(&info, &h, &sat, &ssat, &sst, &dir,
 	    "FileHeader", &scn)) != -1) {
 #define HWP5_SIGNATURE "HWP Document File"
