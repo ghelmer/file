@@ -507,6 +507,7 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
         const char *expn = "";
         const cdf_directory_t *root_storage;
 
+	scn.sst_tab = NULL;
         info.i_fd = fd;
         info.i_buf = buf;
         info.i_len = nbytes;
