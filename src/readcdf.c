@@ -26,7 +26,7 @@
 #include "file.h"
 
 #ifndef lint
-FILE_RCSID("@(#)$File: readcdf.c,v 1.60 2016/10/17 15:25:34 christos Exp $")
+FILE_RCSID("@(#)$File: readcdf.c,v 1.61 2016/10/17 23:04:27 christos Exp $")
 #endif
 
 #include <assert.h>
@@ -436,19 +436,13 @@ private struct sinfo {
 } sectioninfo[] = {
 	{ "Encrypted", "encrypted", 
 		{
-			"EncryptedPackage", NULL, NULL, NULL, NULL,
+			"EncryptedPackage", "EncryptedSummary",
+			NULL, NULL, NULL,
 		},
 		{
-			CDF_DIR_TYPE_USER_STREAM, 0, 0, 0, 0,
-
-		},
-	},
-	{ "Encrypted", "encrypted",
-		{
-			"EncryptedSummary", NULL, NULL, NULL, NULL,
-		},
-		{
-			CDF_DIR_TYPE_USER_STREAM, 0, 0, 0, 0,
+			CDF_DIR_TYPE_USER_STREAM,
+			CDF_DIR_TYPE_USER_STREAM,
+			0, 0, 0,
 
 		},
 	},
@@ -471,20 +465,12 @@ private struct sinfo {
 	},
 	{ "Microsoft Excel", "application/vnd.ms-excel",
 		{
-			"Book", NULL, NULL, NULL, NULL,
+			"Book", "Workbook", NULL, NULL, NULL,
 		},
 		{
 			CDF_DIR_TYPE_USER_STREAM,
-			0, 0, 0, 0,
-		},
-	},
-	{ "Microsoft Excel", "application/vnd.ms-excel",
-		{
-			"Workbook", NULL, NULL, NULL, NULL,
-		},
-		{
 			CDF_DIR_TYPE_USER_STREAM,
-			0, 0, 0, 0,
+			0, 0, 0,
 		},
 	},
 	{ "Microsoft Word", "application/msword",
@@ -528,15 +514,13 @@ cdf_file_dir_info(struct magic_set *ms, const cdf_dir_t *dir)
 		const struct sinfo *si = &sectioninfo[sd];
 		for (j = 0; si->sections[j]; j++) {
 			if (cdf_find_stream(dir, si->sections[j], si->types[j])
-			    <= 0) {
-#ifdef CDF_DEBUG
-				fprintf(stderr, "Can't read %s\n",
-				    si->sections[j]);
-#endif
+			    > 0)
 				break;
-			}
+#ifdef CDF_DEBUG
+			fprintf(stderr, "Can't read %s\n", si->sections[j]);
+#endif
 		}
-		if (si->sections[j] != NULL)
+		if (si->sections[j] == NULL)
 			continue;
 		if (NOTMIME(ms)) {
 			if (file_printf(ms, "CDFV2 %s", si->name) == -1)
