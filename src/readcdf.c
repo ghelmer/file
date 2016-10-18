@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2008 Christos Zoulas
+ * Copyright (c) 2008, 2016 Christos Zoulas
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,7 @@
 #include "file.h"
 
 #ifndef lint
-FILE_RCSID("@(#)$File: readcdf.c,v 1.57 2016/05/03 16:08:49 christos Exp $")
+FILE_RCSID("@(#)$File: readcdf.c,v 1.60 2016/10/17 15:25:34 christos Exp $")
 #endif
 
 #include <assert.h>
@@ -443,6 +443,15 @@ private struct sinfo {
 
 		},
 	},
+	{ "Encrypted", "encrypted",
+		{
+			"EncryptedSummary", NULL, NULL, NULL, NULL,
+		},
+		{
+			CDF_DIR_TYPE_USER_STREAM, 0, 0, 0, 0,
+
+		},
+	},
 	{ "QuickBooks", "quickbooks", 
 		{
 #if 0
@@ -458,6 +467,54 @@ private struct sinfo {
 #endif
 			CDF_DIR_TYPE_USER_STREAM,
 			0, 0, 0, 0
+		},
+	},
+	{ "Microsoft Excel", "application/vnd.ms-excel",
+		{
+			"Book", NULL, NULL, NULL, NULL,
+		},
+		{
+			CDF_DIR_TYPE_USER_STREAM,
+			0, 0, 0, 0,
+		},
+	},
+	{ "Microsoft Excel", "application/vnd.ms-excel",
+		{
+			"Workbook", NULL, NULL, NULL, NULL,
+		},
+		{
+			CDF_DIR_TYPE_USER_STREAM,
+			0, 0, 0, 0,
+		},
+	},
+	{ "Microsoft Word", "application/msword",
+		{
+			"WordDocument", NULL, NULL, NULL, NULL,
+		},
+		{
+			CDF_DIR_TYPE_USER_STREAM,
+			0, 0, 0, 0,
+		},
+	},
+	{ "Microsoft PowerPoint", "application/vnd.ms-powerpoint",
+		{
+			"PowerPoint", NULL, NULL, NULL, NULL,
+		},
+		{
+			CDF_DIR_TYPE_USER_STREAM,
+			0, 0, 0, 0,
+		},
+	},
+	{ "Microsoft Outlook Message", "application/vnd.ms-outlook",
+		{
+			"__properties_version1.0",
+			"__recip_version1.0_#00000000",
+			NULL, NULL, NULL,
+		},
+		{
+			CDF_DIR_TYPE_USER_STREAM,
+			CDF_DIR_TYPE_USER_STORAGE,
+			0, 0, 0,
 		},
 	},
 };
@@ -507,7 +564,7 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
         const char *expn = "";
         const cdf_directory_t *root_storage;
 
-	scn.sst_tab = NULL;
+        scn.sst_tab = NULL;
         info.i_fd = fd;
         info.i_buf = buf;
         info.i_len = nbytes;
@@ -573,80 +630,6 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 		goto out5;
 	}
 
-	if ((i = cdf_find_stream(&dir, "EncryptedSummary", CDF_DIR_TYPE_USER_STREAM)) != 0) {
-		if (NOTMIME(ms)) {
-		  if (file_printf(ms,
-				  "Encrypted") == -1)
-		    return -1;
-		} else {
-		  if (file_printf(ms, "application/CDFV2-encrypted") == -1)
-		    return -1;
-		}
-		i = 1;
-		goto out5;
-	}
-
-	if ((i = cdf_find_stream(&dir, "Book", CDF_DIR_TYPE_USER_STREAM)) != 0) {
-		if (NOTMIME(ms)) {
-		  if (file_printf(ms, "Microsoft Excel") == -1)
-		    return -1;
-		} else {
-		  if (file_printf(ms, "application/vnd.ms-excel") == -1)
-		    return -1;
-		}
-		i = 1;
-		goto out5;
-	}
-
-	if ((i = cdf_find_stream(&dir, "Workbook", CDF_DIR_TYPE_USER_STREAM)) != 0) {
-		if (NOTMIME(ms)) {
-		  if (file_printf(ms, "Microsoft Excel") == -1)
-		    return -1;
-		} else {
-		  if (file_printf(ms, "application/vnd.ms-excel") == -1)
-		    return -1;
-		}
-		i = 1;
-		goto out5;
-	}
-
-	if ((i = cdf_find_stream(&dir, "WordDocument", CDF_DIR_TYPE_USER_STREAM)) != 0) {
-		if (NOTMIME(ms)) {
-		  if (file_printf(ms, "Microsoft Word") == -1)
-		    return -1;
-		} else {
-		  if (file_printf(ms, "application/msword") == -1)
-		    return -1;
-		}
-		i = 1;
-		goto out5;
-	}
-
-	if ((i = cdf_find_stream(&dir, "PowerPoint", CDF_DIR_TYPE_USER_STREAM)) != 0) {
-		if (NOTMIME(ms)) {
-		  if (file_printf(ms, "Microsoft PowerPoint") == -1)
-		    return -1;
-		} else {
-		  if (file_printf(ms, "application/vnd.ms-powerpoint") == -1)
-		    return -1;
-		}
-		i = 1;
-		goto out5;
-	}
-
-	if ((i = cdf_find_stream(&dir, "__properties_version1.0", CDF_DIR_TYPE_USER_STREAM)) != 0 &&
-	    (i = cdf_find_stream(&dir, "__recip_version1.0_#00000000", CDF_DIR_TYPE_USER_STORAGE)) != 0) {
-		if (NOTMIME(ms)) {
-		  if (file_printf(ms, "Microsoft Outlook MSG") == -1)
-		    return -1;
-		} else {
-		  if (file_printf(ms, "application/vnd.ms-outlook") == -1)
-		    return -1;
-		}
-		i = 1;
-		goto out5;
-	}
-
 	if ((i = cdf_read_user_stream(&info, &h, &sat, &ssat, &sst, &dir,
 	    "FileHeader", &scn)) != -1) {
 #define HWP5_SIGNATURE "HWP Document File"
@@ -664,10 +647,7 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 		    i = 1;
 		    goto out5;
 		} else {
-		    free(scn.sst_tab);
-		    scn.sst_tab = NULL;
-		    scn.sst_len = 0;
-		    scn.sst_dirlen = 0;
+		    cdf_zero_stream(&scn);
 		}
 	}
 
@@ -679,16 +659,11 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 	} else {
 		i = cdf_check_summary_info(ms, &info, &h,
 		    &sat, &ssat, &sst, &dir, &scn, root_storage, &expn);
-		if (scn.sst_tab != NULL) {
-			free(scn.sst_tab);
-			scn.sst_tab = NULL;
-			scn.sst_len = 0;
-			scn.sst_dirlen = 0;
-		}
+		cdf_zero_stream(&scn);
 	}
 	if (i <= 0) {
-		if ((i = cdf_read_doc_summary_info(&info, &h, &sat, &ssat, &sst, &dir,
-		    &scn)) == -1) {
+		if ((i = cdf_read_doc_summary_info(&info, &h, &sat, &ssat,
+		    &sst, &dir, &scn)) == -1) {
 			if (errno != ESRCH) {
 				expn = "Cannot read summary info";
 			}
@@ -703,9 +678,8 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 			expn = "Cannot read section info";
 	}
 out5:
-        free(scn.sst_tab);
-/* unused: out4: */
-        free(sst.sst_tab);
+	cdf_zero_stream(&scn);
+	cdf_zero_stream(&sst);
 out3:
         free(dir.dir_tab);
 out2:
