@@ -600,6 +600,22 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 	}
 #endif
 
+	/*
+	 * Check for encrypted summary before SummaryInformation
+	 * or DocumentSummaryInformation sections are parsed.
+	 */
+	if ((i = cdf_find_stream(&dir, "EncryptedSummary", CDF_DIR_TYPE_USER_STREAM)) != 0) {
+		if (NOTMIME(ms)) {
+		  if (file_printf(ms,
+				  "Encrypted") == -1)
+		    return -1;
+		} else {
+		  if (file_printf(ms, "application/CDFV2-encrypted") == -1)
+		    return -1;
+		}
+		i = 1;
+		goto out5;
+	}
 	if ((i = cdf_find_stream(&dir, "DRMEncryptedDataSpace", CDF_DIR_TYPE_USER_STREAM)) != 0) {
 		if (NOTMIME(ms)) {
 		  if (file_printf(ms,
