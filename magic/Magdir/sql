@@ -97,7 +97,6 @@
 # associated application.
 #
 0   string  SQLite\ format\ 3	SQLite 3.x database
-!:mime	application/x-sqlite3
 >0x840 search/128 CREATE\ TABLE\ CAP_FEATURES_INFO\ 	(HP VDF file)
 !:mime	application/x-hp-vdf
 >0x840 search/4096 4115PrintQuality    (HP VDF file)
@@ -114,13 +113,21 @@
 # and with string "ZV-zlib" in like extra.sqlite
 !:ext sqlite/sqlite3/db/dbe
 >60 belong  =0x5f4d544e  (Monotone source repository)
+!:mime	application/x-sqlite3
 >68 belong  =0x0f055112  (Fossil checkout)
+!:mime	application/x-sqlite3
 >68 belong  =0x0f055113  (Fossil global configuration)
+!:mime	application/x-sqlite3
 >68 belong  =0x0f055111  (Fossil repository)
+!:mime	application/x-sqlite3
 >68 belong  =0x42654462  (Bentley Systems BeSQLite Database)
+!:mime	application/x-sqlite3
 >68 belong  =0x42654c6e  (Bentley Systems Localization File)
+!:mime	application/x-sqlite3
 >68 belong  =0x47504b47  (OGC GeoPackage file)
->68 default x
+!:mime	application/x-sqlite3
+>68 default x		(default)
+!:mime	application/x-sqlite3
 >>68 belong  !0          \b, application id %u
 >>60 belong  !0          \b, user version %d
 >96 belong  x            \b, last written using SQLite version %d
