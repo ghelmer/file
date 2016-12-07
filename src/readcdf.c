@@ -616,7 +616,8 @@ file_trycdf(struct magic_set *ms, int fd, const unsigned char *buf,
 		i = 1;
 		goto out5;
 	}
-	if ((i = cdf_find_stream(&dir, "DRMEncryptedDataSpace", CDF_DIR_TYPE_USER_STREAM)) != 0) {
+	if ((i = cdf_find_stream(&dir, "DRMEncryptedDataSpace", CDF_DIR_TYPE_USER_STREAM)) != 0 ||
+	    (i = cdf_find_stream(&dir, "\011DRMContent", CDF_DIR_TYPE_USER_STREAM)) != 0) {
 		if (NOTMIME(ms)) {
 		  if (file_printf(ms,
 				  "MS RMS Encrypted") == -1)
