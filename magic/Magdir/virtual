@@ -9,6 +9,16 @@
 # .vhd
 0	string	conectix	Microsoft Disk Image, Virtual Server or Virtual PC
 
+# MS Dynamic Virtual Hard Disk Image Format
+# https://technet.microsoft.com/en-us/virtualization/bb676673.aspx
+0	string	cxsparse	Microsoft dynamic virtual disk image file
+!:mime	application/vnd.ms-virtual-img
+
+# Hyper-V virtual disk image
+# .vhdx and .avhdx
+0	string	vhdxfile	Microsoft Hyper-V Disk Image
+!:mime	application/vnd.ms-hyperv-img
+
 # libvirt
 # From: Philipp Hahn <hahn@univention.de>
 0	string	LibvirtQemudSave	Libvirt QEMU Suspend Image
