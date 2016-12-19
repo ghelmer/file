@@ -434,7 +434,7 @@ private struct sinfo {
 	const char *sections[5];
 	const int  types[5];
 } sectioninfo[] = {
-	{ "Encrypted", "encrypted", 
+	{ "Encrypted", "CDFV2-encrypted", 
 		{
 			"EncryptedPackage", "EncryptedSummary",
 			NULL, NULL, NULL,
