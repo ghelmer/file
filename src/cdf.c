@@ -35,7 +35,7 @@
 #include "file.h"
 
 #ifndef lint
-FILE_RCSID("@(#)$File: cdf.c,v 1.84 2016/10/17 15:25:34 christos Exp $")
+FILE_RCSID("@(#)$File: cdf.c,v 1.92 2017/03/17 23:56:16 christos Exp $")
 #endif
 
 #include <assert.h>
@@ -527,8 +527,11 @@ cdf_read_long_sector_chain(const cdf_info_t *info, const cdf_header_t *h,
 	ssize_t nr;
 	scn->sst_tab = NULL;
 	scn->sst_len = cdf_count_chain(sat, sid, ss);
-	scn->sst_dirlen = len;
+	scn->sst_dirlen = MAX(h->h_min_size_standard_stream, len);
 	scn->sst_ss = ss;
+
+	if (sid == CDF_SECID_END_OF_CHAIN || len == 0)
+		return cdf_zero_stream(scn);
 
 	if (scn->sst_len == (size_t)-1)
 		goto out;
@@ -808,7 +811,7 @@ cdf_find_stream(const cdf_dir_t *dir, const char *name, int type)
 		    == 0)
 			break;
 	if (i > 0)
-		return i;
+		return CAST(int, i);
 
 	DPRINTF(("Cannot find type %d `%s'\n", type, name));
 	errno = ESRCH;
@@ -888,8 +891,8 @@ cdf_read_property_info(const cdf_stream_t *sst, const cdf_header_t *h,
 			DPRINTF(("Wrapped around %p < %p\n", q, p));
 			goto out;
 		}
-		if (q > e) {
-			DPRINTF(("Ran of the end %p > %p\n", q, e));
+		if (q >= e) {
+			DPRINTF(("Ran off the end %p >= %p\n", q, e));
 			goto out;
 		}
 		inp[i].pi_id = CDF_GETUINT32(p, i << 1);
@@ -979,19 +982,29 @@ cdf_read_property_info(const cdf_stream_t *sst, const cdf_header_t *h,
 			for (j = 0; j < nelements && i < sh.sh_properties;
 			    j++, i++)
 			{
-				uint32_t l = CDF_GETUINT32(q, o);
+				uint32_t l;
+
+				if (q + o + sizeof(uint32_t) >= e)
+					goto out;
+
+				l = CDF_GETUINT32(q, o);
+				o4 += sizeof(uint32_t);
+				if (q + o4 + l >= e)
+					goto out;
+
 				inp[i].pi_str.s_len = l;
-				inp[i].pi_str.s_buf = (const char *)
-				    (const void *)(&q[o4 + sizeof(l)]);
+				inp[i].pi_str.s_buf = CAST(const char *,
+				    CAST(const void *, &q[o4]));
+
 				DPRINTF(("l = %d, r = %" SIZE_T_FORMAT
 				    "u, s = %s\n", l,
 				    CDF_ROUND(l, sizeof(l)),
 				    inp[i].pi_str.s_buf));
+
 				if (l & 1)
 					l++;
+
 				o += l >> 1;
-				if (q + o >= e)
-					goto out;
 				o4 = o * sizeof(uint32_t);
 			}
 			i--;
@@ -1065,7 +1078,7 @@ cdf_unpack_catalog(const cdf_header_t *h, const cdf_stream_t *sst,
 {
 	size_t ss = cdf_check_stream(sst, h);
 	const char *b = CAST(const char *, sst->sst_tab);
-	const char *eb = b + ss * sst->sst_len;
+	const char *nb, *eb = b + ss * sst->sst_len;
 	size_t nr, i, j, k;
 	cdf_catalog_entry_t *ce;
 	uint16_t reclen;
@@ -1110,7 +1123,9 @@ cdf_unpack_catalog(const cdf_header_t *h, const cdf_stream_t *sst,
 			cep->ce_namlen = rlen;
 
 		np = CAST(const uint16_t *, CAST(const void *, (b + 16)));
-		if (RCAST(const char *, np + cep->ce_namlen) > eb) {
+		nb = CAST(const char *, CAST(const void *,
+		    (np + cep->ce_namlen)));
+		if (nb > eb) {
 			cep->ce_namlen = 0;
 			break;
 		}

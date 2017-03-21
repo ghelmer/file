@@ -1,5 +1,5 @@
 #
-# $File: Makefile.am,v 1.117 2016/07/14 15:26:47 christos Exp $
+# $File: Makefile.am,v 1.123 2017/03/12 22:57:44 christos Exp $
 #
 MAGIC_FRAGMENT_BASE = Magdir
 MAGIC_DIR = $(top_srcdir)/magic
@@ -23,7 +23,9 @@ $(MAGIC_FRAGMENT_DIR)/animation \
 $(MAGIC_FRAGMENT_DIR)/aout \
 $(MAGIC_FRAGMENT_DIR)/apl \
 $(MAGIC_FRAGMENT_DIR)/apple \
+$(MAGIC_FRAGMENT_DIR)/application \
 $(MAGIC_FRAGMENT_DIR)/applix \
+$(MAGIC_FRAGMENT_DIR)/apt \
 $(MAGIC_FRAGMENT_DIR)/archive \
 $(MAGIC_FRAGMENT_DIR)/assembler \
 $(MAGIC_FRAGMENT_DIR)/asterix \
@@ -102,6 +104,7 @@ $(MAGIC_FRAGMENT_DIR)/gnome \
 $(MAGIC_FRAGMENT_DIR)/gnu \
 $(MAGIC_FRAGMENT_DIR)/gnumeric \
 $(MAGIC_FRAGMENT_DIR)/gpt \
+$(MAGIC_FRAGMENT_DIR)/gpu \
 $(MAGIC_FRAGMENT_DIR)/grace \
 $(MAGIC_FRAGMENT_DIR)/graphviz \
 $(MAGIC_FRAGMENT_DIR)/gringotts \
@@ -273,6 +276,7 @@ $(MAGIC_FRAGMENT_DIR)/vorbis \
 $(MAGIC_FRAGMENT_DIR)/vxl \
 $(MAGIC_FRAGMENT_DIR)/warc \
 $(MAGIC_FRAGMENT_DIR)/weak \
+$(MAGIC_FRAGMENT_DIR)/webassembly \
 $(MAGIC_FRAGMENT_DIR)/windows \
 $(MAGIC_FRAGMENT_DIR)/wireless \
 $(MAGIC_FRAGMENT_DIR)/wordprocessors \
@@ -283,6 +287,7 @@ $(MAGIC_FRAGMENT_DIR)/xenix \
 $(MAGIC_FRAGMENT_DIR)/xilinx \
 $(MAGIC_FRAGMENT_DIR)/xo65 \
 $(MAGIC_FRAGMENT_DIR)/xwindows \
+$(MAGIC_FRAGMENT_DIR)/yara \
 $(MAGIC_FRAGMENT_DIR)/zfs \
 $(MAGIC_FRAGMENT_DIR)/zilog \
 $(MAGIC_FRAGMENT_DIR)/zyxel 
