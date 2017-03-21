@@ -27,7 +27,7 @@
 #include "file.h"
 
 #ifndef lint
-FILE_RCSID("@(#)$File: readelf.c,v 1.127 2015/11/18 12:29:29 christos Exp $")
+FILE_RCSID("@(#)$File: readelf.c,v 1.132 2017/02/11 18:12:03 christos Exp $")
 #endif
 
 #ifdef BUILTIN_ELF
@@ -890,7 +890,7 @@ get_string_on_virtaddr(struct magic_set *ms,
 
 	offset = get_offset_from_virtaddr(ms, swap, clazz, fd, ph_off, ph_num,
 	    fsize, virtaddr);
-	if ((buflen = pread(fd, buf, buflen, offset)) <= 0) {
+	if ((buflen = pread(fd, buf, CAST(size_t, buflen), offset)) <= 0) {
 		file_badread(ms);
 		return 0;
 	}
@@ -1185,7 +1185,7 @@ doshn(struct magic_set *ms, int clazz, int swap, int fd, off_t off, int num,
 {
 	Elf32_Shdr sh32;
 	Elf64_Shdr sh64;
-	int stripped = 1;
+	int stripped = 1, has_debug_info = 0;
 	size_t nbadcap = 0;
 	void *nbuf;
 	off_t noff, coff, name_off;
@@ -1203,8 +1203,9 @@ doshn(struct magic_set *ms, int clazz, int swap, int fd, off_t off, int num,
 	/* Read offset of name section to be able to read section names later */
 	if (pread(fd, xsh_addr, xsh_sizeof, CAST(off_t, (off + size * strtab)))
 	    < (ssize_t)xsh_sizeof) {
-		file_badread(ms);
-		return -1;
+		if (file_printf(ms, ", missing section headers") == -1)
+			return -1;
+		return 0;
 	}
 	name_off = xsh_offset;
 
@@ -1215,8 +1216,10 @@ doshn(struct magic_set *ms, int clazz, int swap, int fd, off_t off, int num,
 			return -1;
 		}
 		name[namesize] = '\0';
-		if (strcmp(name, ".debug_info") == 0)
+		if (strcmp(name, ".debug_info") == 0) {
+			has_debug_info = 1;
 			stripped = 0;
+		}
 
 		if (pread(fd, xsh_addr, xsh_sizeof, off) < (ssize_t)xsh_sizeof) {
 			file_badread(ms);
@@ -1370,6 +1373,10 @@ doshn(struct magic_set *ms, int clazz, int swap, int fd, off_t off, int num,
 		}
 	}
 
+	if (has_debug_info) {
+		if (file_printf(ms, ", with debug_info") == -1)
+			return -1;
+	}
 	if (file_printf(ms, ", %sstripped", stripped ? "" : "not ") == -1)
 		return -1;
 	if (cap_hw1) {
