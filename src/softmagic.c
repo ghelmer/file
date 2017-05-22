@@ -32,7 +32,7 @@
 #include "file.h"
 
 #ifndef	lint
-FILE_RCSID("@(#)$File: softmagic.c,v 1.246 2017/03/08 20:45:35 christos Exp $")
+FILE_RCSID("@(#)$File: softmagic.c,v 1.248 2017/04/21 16:54:57 christos Exp $")
 #endif	/* lint */
 
 #include "magic.h"
@@ -192,6 +192,7 @@ flush:
 			while (magindex < nmagic - 1 &&
 			    magic[magindex + 1].cont_level != 0)
 				magindex++;
+			cont_level = 0;
 			continue; /* Skip to next top-level test*/
 		}
 
@@ -370,6 +371,7 @@ flush:
 				case -1:
 				case 0:
 					flush = 1;
+					cont_level--;
 					break;
 				default:
 					break;
@@ -1365,7 +1367,7 @@ mget(struct magic_set *ms, const unsigned char *s, struct magic *m,
 		return -1;
 
 	if ((ms->flags & MAGIC_DEBUG) != 0) {
-		fprintf(stderr, "mget(type=%d, flag=%x, offset=%u, o=%"
+		fprintf(stderr, "mget(type=%d, flag=%#x, offset=%u, o=%"
 		    SIZE_T_FORMAT "u, " "nbytes=%" SIZE_T_FORMAT
 		    "u, il=%hu, nc=%hu)\n",
 		    m->type, m->flag, offset, o, nbytes,
