@@ -1,4 +1,8 @@
 #!/bin/sh
+#
+# Build:
+#   ./configure --enable-static --disable-shared --no-recursion --disable-zlib
+#   make
 
 DEPLOY_HOST=capella.palisadesys.com
 DEPLOY_BASE_DIR=/home/projects/WinBuild/Artifacts/MinGW64
