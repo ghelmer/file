@@ -998,7 +998,7 @@
 # DOS EPS Binary File Header
 # From: Ed Sznyter <ews@Black.Market.NET>
 0	belong		0xC5D0D3C6	DOS EPS Binary File
-!:mime	image/x-eps
+!:mime	application/postscript
 >4	long		>0		Postscript starts at byte %d
 >>8	long		>0		length %d
 >>>12	long		>0		Metafile starts at byte %d
