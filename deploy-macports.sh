@@ -1,4 +1,10 @@
 #!/bin/sh
+#
+#
+# Build:
+#   CFLAGS="-g -O2 -arch x86_64 -mmacosx-version-min=10.9" \
+#     ./configure --no-recursion --disable-zlib
+#   make
 
 DEPLOY_HOST=capella.palisadesys.com
 DEPLOY_BASE_DIR=/home/projects/OSXBuild/Artifacts/MacPorts
