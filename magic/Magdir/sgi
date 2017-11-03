@@ -130,9 +130,9 @@
 # Alias Maya files
 0	string/t	//Maya\040ASCII	Alias Maya Ascii File,
 >13	string	>\0	version %s
+!:mime	image/vnd.maya
 8	string	MAYAFOR4	Alias Maya Binary File,
 >32	string	>\0	version %s scene
-8	string	MayaFOR4	Alias Maya Binary File,
->32	string	>\0	version %s scene
+!:mime	image/vnd.maya
 8	string	CIMG		Alias Maya Image File
 8	string	DEEP		Alias Maya Image File
