@@ -261,16 +261,17 @@
 # Modified by: Joerg Jenderek
 # Note:	container for TrueType, OpenType font
 0	string		ttcf
-!:mime	application/vnd.ms-ttfc
 # skip ASCII text
 >4	ubyte		0		
 # sfnt version often 0x00010000 of 1st table is TrueType
 >>(12.L)	ubelong	!0x4f54544f	TrueType
+!:mime	application/vnd.ms-ttfc
 #!:mime	font/ttf
 !:apple	????tfil
 !:ext	ttc
 # sfnt version 4F54544Fh~OTTO of 1st table is OpenType font 
 >>(12.L)	ubelong	=0x4f54544f	OpenType
+!:mime	application/vnd.ms-opentype
 #!:mime	font/otf
 !:apple	????OTTO
 # no example found for otc
