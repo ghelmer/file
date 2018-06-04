@@ -664,6 +664,7 @@
 # Note: there exist other color palette formats also with .pal extension
 0	string	JASC-PAL\r\n	PaintShop Pro color palette
 #!:mime	text/plain
+!:mime	image/psp
 # PspPalette extension is used by newer (probably 8) PaintShopPro versions
 !:ext	pal/PspPalette
 # 2nd line contains palette file version. For example "0100"
