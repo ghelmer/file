@@ -159,3 +159,7 @@
 # http://megacad.de/
 # From: Markus Heidelberg <markus.heidelberg@web.de>
 0	string	MegaCad23\0	MegaCAD 2D/3D drawing
+
+# STEP Standard for the Exchange of Product model data - ISO 10303
+0	string	ISO-10303-21;	STEP ISO-10303 CAD
+!:mime	application/step
