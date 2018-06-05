@@ -159,3 +159,13 @@
 # http://megacad.de/
 # From: Markus Heidelberg <markus.heidelberg@web.de>
 0	string	MegaCad23\0	MegaCAD 2D/3D drawing
+
+# STEP Standard for the Exchange of Product model data - ISO 10303
+0	string	ISO-10303-21;	STEP ISO-10303 CAD
+!:mime	application/step
+
+# UGS / Siemens PARASOLID XT (Text-format transmit file) CAD file
+# File format is documented as using NL between lines, but
+# sample files have CR-NL between lines.
+80	search/2	\012**PARASOLID\ !"	PARASOLID Transmit File
+!:mime	model/vnd.parasolid.transmit.text
