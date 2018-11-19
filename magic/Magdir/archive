@@ -1138,6 +1138,18 @@
 >(26.s+30)	leshort	0xcafe		Java archive data (JAR)
 !:mime	application/java-archive
 
+# Java Jar file - META-INF/ at beginning followed by META-INF/MANIFEST (no 0xcafe)
+>26		string \x9\0\0\0META-INF/
+>>65		search/256 \x14\0\0\0META-INF/MANIFEST	Java archive data (JAR)
+!:mime	application/java-archive
+
+>>65		string \x14\0\x4\0META-INF/MANIFEST	Java archive data (JAR)
+!:mime	application/java-archive
+
+# Java Jar file - META-INF/MANIFEST at beginning
+>26		string \x14\0\0\0META-INF/MANIFEST	Java archive data (JAR)
+!:mime	application/java-archive
+
 # iOS App
 >(26.s+30)	leshort	!0xcafe
 >>26		string	!\x8\0\0\0mimetype
